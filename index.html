@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🎨 miori studio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Mitr', 'sans-serif'], /* เปลี่ยนฟอนต์หลักทั้งหมดเป็น Mitr */
+                        cute: ['Mitr', 'sans-serif'],
+                    },
+                    colors: {
+                        p_bg: '#fff5f7',         /* สีพื้นหลังชมพูอ่อนสุดๆ */
+                        p_card_main: '#ffb3c6',  /* สีชมพูพาสเทลหลัก สว่าง */
+                        p_card_light: '#ffe3e8', /* สีชมพูอ่อนละมุน */
+                        p_card_dark: '#ff8fab',  /* สีชมพูเข้มคริสตัล */
+                        p_white_glow: '#ffffff', /* สีขาวสว่าง */
+                        p_text: '#a26974'        /* สีตัวหนังสือชมพูหม่นเข้ม ให้อ่านง่าย */
+                    },
+                    boxShadow: {
+                        'pop': '4px 4px 0px rgba(255, 143, 171, 0.25)', /* เงาสีชมพูละมุนๆ */
+                        'pop-hover': '6px 6px 0px rgba(255, 143, 171, 0.35)',
+                        'glow': '0 0 15px rgba(255, 255, 255, 0.8)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Center for Desktop, Full width for Mobile */
+        body {
+            background-color: #ffd6e0; /* สีพื้นหลังนอกกรอบบน Desktop (โทนชมพู) */
+            display: flex;
+            justify-content: center;
+            color: #a26974;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        /* Mobile App Container */
+        #app-container {
+            width: 100%;
+            max-width: 430px; /* iPhone Pro Max width */
+            min-height: 100vh;
+            background-color: #fff5f7;
+            background-image: radial-gradient(#ffe3e8 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
+            position: relative;
+            overflow-x: hidden;
+            box-shadow: 0 0 30px rgba(255, 143, 171, 0.3);
+        }
+
+        /* Floating Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+        @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-spin-slow { animation: spin-slow 15s linear infinite; }
+        .animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+
+        /* Custom Card Styles */
+        .pop-card {
+            transition: transform 0.2s ease;
+        }
+        .pop-card:active {
+            transform: scale(0.97);
+        }
+
+        /* Speech Bubble Tail for Mobile (Points UP) */
+        .speech-bubble {
+            position: relative;
+        }
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: -12px;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 15px solid #ffb3c6; /* Match p_card_main */
+        }
+
+        /* Hide scrollbar for a cleaner app feel */
+        ::-webkit-scrollbar { display: none; }
+
+        /* New Drifting Animations (ไอคอนลอยผ่านหน้าจอ) */
+        @keyframes driftRight {
+            0% { left: -20%; transform: translateY(0) rotate(0deg); opacity: 0; }
+            15% { opacity: 0.8; }
+            85% { opacity: 0.8; }
+            100% { left: 120%; transform: translateY(-40px) rotate(180deg); opacity: 0; }
+        }
+        @keyframes driftLeft {
+            0% { right: -20%; transform: translateY(0) rotate(0deg); opacity: 0; }
+            15% { opacity: 0.6; }
+            85% { opacity: 0.6; }
+            100% { right: 120%; transform: translateY(50px) rotate(-180deg); opacity: 0; }
+        }
+        .animate-drift-r { animation: driftRight 16s linear infinite; }
+        .animate-drift-l { animation: driftLeft 20s linear infinite; }
+        .animate-drift-r-slow { animation: driftRight 25s linear infinite; animation-delay: -7s; }
+        .animate-drift-l-slow { animation: driftLeft 28s linear infinite; animation-delay: -12s; }
+    </style>
+</head>
+<body class="antialiased font-sans">
+
+    <div id="app-container">
+
+        <div class="absolute top-12 animate-drift-r text-white text-3xl pointer-events-none z-0"><i class="fa-solid fa-sparkles drop-shadow-md"></i></div>
+        <div class="absolute top-32 animate-drift-l text-p_card_light text-4xl pointer-events-none z-0"><i class="fa-regular fa-snowflake"></i></div>
+        <div class="absolute top-80 animate-drift-r-slow text-p_card_light text-2xl pointer-events-none z-0"><i class="fa-solid fa-certificate"></i></div>
+        <div class="absolute top-300px animate-drift-l-slow text-white text-3xl pointer-events-none z-0"><i class="fa-solid fa-wand-magic-sparkles drop-shadow-md"></i></div>
+        <div class="absolute bottom-56 animate-drift-r text-white text-2xl pointer-events-none z-0" style="animation-delay: -4s;"><i class="fa-solid fa-star drop-shadow-md"></i></div>
+        <div class="absolute bottom-20 animate-drift-l text-p_card_light text-3xl pointer-events-none z-0" style="animation-delay: -8s;"><i class="fa-regular fa-gem"></i></div>
+        
+        <div class="absolute top-[250px] animate-drift-r-slow text-white text-2xl pointer-events-none z-0" style="animation-delay: -2s;"><i class="fa-solid fa-cloud"></i></div>
+        <div class="absolute top-[500px] animate-drift-l-slow text-p_card_light text-4xl pointer-events-none z-0" style="animation-delay: -5s;"><i class="fa-solid fa-moon"></i></div>
+        <div class="absolute bottom-32 animate-drift-r text-p_card_main text-3xl pointer-events-none z-0" style="animation-delay: -10s;"><i class="fa-solid fa-heart"></i></div>
+
+        <main class="px-5 py-8 relative z-10">
+            
+            <div class="text-center mb-6 relative">
+                <h1 class="font-cute text-[2.25rem] font-bold tracking-wider inline-block relative text-white leading-none mt-2">
+                    <span class="text-p_card_dark drop-shadow-[2px_2px_0_#fff]">m</span><span class="text-white drop-shadow-[2px_2px_0_#ffb3c6]">i</span><span class="text-p_card_main drop-shadow-[2px_2px_0_#fff]">o</span><span class="text-white drop-shadow-[2px_2px_0_#ffe3e8]">r</span><span class="text-p_card_light drop-shadow-[2px_2px_0_#ff8fab]">i</span> <span class="text-p_card_dark drop-shadow-[2px_2px_0_#fff]">s</span><span class="text-white drop-shadow-[2px_2px_0_#ffb3c6]">t</span><span class="text-p_card_main drop-shadow-[2px_2px_0_#fff]">u</span><span class="text-white drop-shadow-[2px_2px_0_#ffe3e8]">d</span><span class="text-p_card_light drop-shadow-[2px_2px_0_#ff8fab]">i</span><span class="text-p_card_dark drop-shadow-[2px_2px_0_#fff]">o</span>
+                </h1>
+                <p class="font-cute text-p_card_dark text-sm mt-1 rotate-[-2deg] opacity-80">ร้านโมรับทำป้ายเริ่มต้น 59.- ลายน้ำเริ่มต้น 29.- 💕</p>
+            </div>
+
+            <div class="flex flex-col items-center mb-8">
+                <div class="bg-p_card_main rounded-[24px] p-5 shadow-pop w-full text-white mt-2">
+                    <div class="flex justify-between items-center mb-3">
+                        <h2 class="font-cute text-xl font-bold drop-shadow-sm">Welcome to my studio!</h2>
+                        <a href="https://www.facebook.com/profile.php?id=61586035258954" target="_blank" class="bg-white text-p_card_dark font-bold font-cute px-3 py-1 rounded-full active:scale-95 transition shadow-sm text-[11px]">
+                            <i class="fa-brands fa-facebook mr-1 text-p_card_main"></i> ติดต่อร้านโม
+                        </a>
+                    </div>
+                    <div class="text-[13px] space-y-2 text-[#fff0f3] leading-snug font-medium">
+                        <p>ยินดีต้อนรับสู่ <strong class="text-white text-sm">miori studio</strong> นะคะ ยินดีให้บริการลูกค้าทุกท่านค่ะ</p>
+                        <p>ร้านโมรับออกแบบป้ายหลากหลายสไตล์ตามสั่ง และรับทำลายน้ำน่ารักๆ สนใจแนวไหนสามารถดูรายละเอียดและทักแชทสอบถามเมคเฟรนกันได้เลยน้า</p>
+                        <div class="bg-white/20 backdrop-blur-sm inline-block px-3 py-1.5 rounded-xl mt-1 text-white text-[11px] border border-white/30">
+                            <i class="fa-solid fa-comment-dots mr-1"></i> ปกติรองาน 4-8 ชั่วโมง แล้วแต่คิวของวันนั้นๆ ค่ะ!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <div class="bg-white rounded-[20px] p-4 shadow-pop text-p_text border border-p_card_light">
+                    <h3 class="font-cute text-lg font-bold mb-3 text-p_card_dark"><i class="fa-solid fa-cart-shopping text-p_card_main"></i> วิธีการสั่งงาน</h3>
+                    <ul class="space-y-2.5 text-[12px] font-medium leading-snug">
+                        <li class="flex gap-2">
+                            <span class="bg-p_card_light text-p_card_dark w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 font-cute text-[10px]">1</span>
+                            <p>ดูตัวอย่างงาน บล็อกและตูนที่ลิงค์ด้านล่างก่อนสั่งซื้อ</p>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="bg-p_card_light text-p_card_dark w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 font-cute text-[10px]">2</span>
+                            <p>สนใจป้ายไหน ตูนตัวไหน โทนสีอะไร ให้ส่งพาเลทสีให้ทางร้าน</p>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="bg-p_card_light text-p_card_dark w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 font-cute text-[10px]">3</span>
+                            <p><strong class="text-p_card_dark">บรีฟงานให้ละเอียดถี่ถ้วน</strong> ต้องการให้ใส่อะไรพิมพ์บอกให้ครบถ้วนก่อนส่งนะคะ <br><span class="text-[10px] text-p_card_main">*ส่งอะไรมาแบบไหน พิมพ์แบบไหนมา ร้านทำตามแบบนั้นนะคะ เช็คให้ดีก่อนส่งเสมอค่ะ</span></p>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="bg-p_card_light text-p_card_dark w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 font-cute text-[10px]">4</span>
+                            <p>โอนเงินหลังจากบรีฟเสร็จ <strong class="text-p_card_dark">โอน = ลงคิวเริ่มงาน</strong> เท่านั้นนะคะ (ราคาเหมารับผ่อน/มัดจำ สอบถามก่อนได้ค่ะ)</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <a href="https://docs.google.com/spreadsheets/d/1-FdSIRlWdqaiypReK_ER95wd8PWxHJHZpHq2tXZRt6Q/edit?usp=drivesdk" target="_blank" class="bg-p_card_light text-p_card_dark rounded-[16px] p-3.5 flex items-center justify-between pop-card shadow-pop font-bold font-cute text-sm">
+                    <span><i class="fa-regular fa-calendar-check mr-2"></i> เช็คคิวงานปัจจุบัน (คลิ๊ก)</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                
+                <a href="https://www.facebook.com/profile.php?id=61586035258954" target="_blank" class="bg-p_card_dark rounded-[16px] p-3.5 flex items-center justify-between pop-card shadow-pop">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white w-8 h-8 rounded-full flex items-center justify-center text-p_card_dark text-sm">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <h4 class="font-cute text-white font-bold text-sm">ติดต่อสั่งงานผ่าน Facebook ✨</h4>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-white text-sm"></i>
+                </a>
+            </div>
+
+            <div class="bg-p_card_light rounded-[24px] p-5 shadow-pop relative overflow-hidden mb-4 border border-white/50">
+                <div class="absolute top-3 right-3 text-white text-3xl opacity-40"><i class="fa-solid fa-feather-pointed"></i></div>
+                
+                <div class="inline-block bg-white text-p_card_dark font-cute font-bold px-3 py-0.5 rounded-full mb-3 text-[11px] shadow-sm">
+                    เงื่อนไขเวลาและงานเร่ง ⚡
+                </div>
+                
+                <h3 class="text-p_card_dark font-bold mb-3 text-[15px] leading-tight">โปรดอ่านข้อตกลงเพื่อความเข้าใจที่ตรงกันน้า 💖</h3>
+                
+                <div class="space-y-2 text-[12px] text-p_text relative z-10">
+                    <p class="bg-white/60 p-2 rounded-lg backdrop-blur-sm"><strong class="text-p_card_dark">1. ระยะเวลารองาน:</strong> ปกติจะใช้เวลารองานประมาณ 4-8 ชั่วโมง ขึ้นอยู่กับปริมาณคิวงานของในแต่ละวันนั้นๆ ค่ะ</p>
+                    <p class="bg-white/60 p-2 rounded-lg backdrop-blur-sm"><strong class="text-p_card_dark">2. การสั่งงานเร่ง:</strong> หากต้องการงานด่วน/งานเร่ง จะคิดราคาเพิ่มเป็น <strong class="text-p_card_dark">*2 ของราคางานชิ้นนั้นๆ</strong> นะคะ</p>
+                    <p class="bg-white/60 p-2 rounded-lg backdrop-blur-sm"><strong class="text-p_card_dark">3. การตรวจเช็ค:</strong> รอร้านค้าส่งงานให้เช็คความถูกต้องภายในเวลาที่กำหนด และกรุณาตรวจสอบรายละเอียดให้ครบถ้วนด้วยน้า</p>
+                    
+                    <p class="bg-p_card_dark text-white p-1.5 rounded-lg font-bold text-center mt-2 shadow-pop text-[11px]">
+                        โอนเงิน = ยอมรับกฎและเงื่อนไขของร้านมิตรสตู
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[24px] p-4 shadow-pop text-p_text relative overflow-hidden mb-6 border border-p_card_light">
+                <div class="inline-block bg-p_card_light text-p_card_dark font-cute font-bold px-3 py-0.5 rounded-full mb-2 text-[11px]">
+                    <i class="fa-solid fa-pen-fancy mr-1"></i> รายการเรทราคาป้ายต่าง ๆ
+                </div>
+                <div class="text-[12px] font-medium relative z-10 space-y-1.5 mt-1">
+                    <p class="flex justify-between border-b border-dashed border-p_card_light pb-1"><span>✨ ป้ายแนวแฟรี่เทล</span> <strong class="text-p_card_dark">เริ่มต้น 89.-</strong></p>
+                    <p class="flex justify-between border-b border-dashed border-p_card_light pb-1"><span>☁️ ป้ายแนวเมฆปุ๊กปิ๊ก v.2</span> <strong class="text-p_card_dark">เริ่มต้น 69.-</strong></p>
+                    <p class="flex justify-between border-b border-dashed border-p_card_light pb-1"><span>🌌 ป้ายแนวความฝันชั่วนิรัน</span> <strong class="text-p_card_dark">เริ่มต้น 69.-</strong></p>
+                    <p class="flex justify-between border-b border-dashed border-p_card_light pb-1"><span>🌫️ ป้ายแนวหมอกแห่งความฝัน</span> <strong class="text-p_card_dark">เริ่มต้น 79.-</strong></p>
+                    <p class="flex justify-between border-b border-dashed border-p_card_light pb-1"><span>📄 ป้ายแนวกระดาษ</span> <strong class="text-p_card_dark">เริ่มต้น 59.-</strong></p>
+                    <p class="flex justify-between border-b border-dashed border-p_card_light pb-1"><span>👑 ป้ายแนวเฮด</span> <strong class="text-p_card_dark">เริ่มต้น 59.-</strong></p>
+                    <p class="flex justify-between pb-1"><span>📊 ป้ายเรทต่างๆ</span> <strong class="text-p_card_dark">เริ่มต้น 79.-</strong></p>
+                    
+                    <div class="bg-p_bg p-2.5 rounded-xl border border-p_card_light shadow-sm mt-2">
+                        <p class="text-[11px] leading-tight text-center">🎨 <strong class="text-p_card_dark">รับทำป้ายเริ่มต้น 59.- | รับทำลายน้ำเริ่มต้น 29.-</strong> 🎨</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <div class="inline-block bg-white text-p_card_dark font-cute font-bold px-4 py-1.5 rounded-full mb-4 text-sm shadow-pop transform -rotate-1 border border-p_card_light">
+                    ไดรฟ์รวบรวมผลงาน & ของตกแต่ง
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2.5">
+                    <a href="https://drive.google.com/drive/folders/1wVEoPH3lRjf0TdAi-NZPddQ5QYRO0_DD" target="_blank" class="bg-white rounded-[16px] p-2 text-center pop-card shadow-pop flex flex-col h-full border-2 border-dashed border-p_card_light">
+                        <div class="bg-p_card_light rounded-lg aspect-square mb-1.5 flex items-center justify-center text-2xl text-white">
+                            <i class="fa-solid fa-palette drop-shadow-sm"></i>
+                        </div>
+                        <h4 class="font-cute font-bold text-p_card_dark text-[10px] leading-tight mb-1">ตัวอย่างงานทั้งหมด</h4>
+                        <p class="text-[8px] text-p_text mt-auto bg-p_bg rounded-full py-0.5 font-bold">คลิ๊กเพื่อดู</p>
+                    </a>
+
+                    <a href="https://drive.google.com/drive/folders/1DrbeXs69UWEV-7M1MyYU0feF4Ss5QKyD" target="_blank" class="bg-p_card_light rounded-[16px] p-2 text-center pop-card shadow-pop flex flex-col h-full border-2 border-dashed border-white">
+                        <div class="bg-white/50 rounded-lg aspect-square mb-1.5 flex items-center justify-center text-2xl text-p_card_dark">
+                            <i class="fa-solid fa-border-all drop-shadow-sm"></i>
+                        </div>
+                        <h4 class="font-cute font-bold text-p_card_dark text-[10px] leading-tight mb-1">เลือกบล็อคป้าย</h4>
+                        <p class="text-[8px] text-p_card_main mt-auto bg-white rounded-full py-0.5 font-bold">คลิ๊กเพื่อดู</p>
+                    </a>
+
+                    <a href="https://drive.google.com/drive/folders/1w4i7tAcvXdWSPWB0gS5XiRjlO_4qGyAb" target="_blank" class="bg-p_card_main rounded-[16px] p-2 text-center pop-card shadow-pop flex flex-col h-full border-2 border-dashed border-white/50">
+                        <div class="bg-white/30 rounded-lg aspect-square mb-1.5 flex items-center justify-center text-2xl text-white">
+                            <i class="fa-solid fa-face-smile drop-shadow-sm"></i>
+                        </div>
+                        <h4 class="font-cute font-bold text-white text-[10px] leading-tight mb-1">เลือกการ์ตูนตูน</h4>
+                        <p class="text-[8px] text-p_card_dark mt-auto bg-white rounded-full py-0.5 font-bold">คลิ๊กเพื่อดู</p>
+                    </a>
+
+                    <a href="https://drive.google.com/drive/folders/1nIJcg_vhLkPfRDJAE8nySf55U2UMe2yO" target="_blank" class="bg-p_card_dark rounded-[16px] p-2 text-center pop-card shadow-pop flex flex-col h-full text-white border-2 border-dashed border-p_card_main">
+                        <div class="bg-white/20 rounded-lg aspect-square mb-1.5 flex items-center justify-center text-2xl text-white">
+                            <i class="fa-solid fa-wand-magic-sparkles drop-shadow-sm"></i>
+                        </div>
+                        <h4 class="font-cute font-bold text-[10px] leading-tight text-white mb-1">เลือกของตกแต่ง</h4>
+                        <p class="text-[8px] text-p_card_dark mt-auto bg-white rounded-full py-0.5 font-bold">คลิ๊กเพื่อดู</p>
+                    </a>
+
+                    <a href="https://drive.google.com/drive/folders/1wVEoPH3lRjf0TdAi-NZPddQ5QYRO0_DD" target="_blank" class="bg-white rounded-[16px] p-2 text-center pop-card shadow-pop flex flex-col h-full border-2 border-dashed border-p_card_light">
+                        <div class="bg-p_card_main rounded-lg aspect-square mb-1.5 flex items-center justify-center text-2xl text-white">
+                            <i class="fa-solid fa-star drop-shadow-sm"></i>
+                        </div>
+                        <h4 class="font-cute font-bold text-[10px] leading-tight text-p_card_dark mb-1">ผลงานอัปเดต</h4>
+                        <p class="text-[8px] text-p_text mt-auto bg-p_bg rounded-full py-0.5 font-bold">คลิ๊กเพื่อดู</p>
+                    </a>
+
+                    <a href="https://drive.google.com/drive/folders/1nIJcg_vhLkPfRDJAE8nySf55U2UMe2yO" target="_blank" class="bg-p_card_light rounded-[16px] p-2 text-center pop-card shadow-pop flex flex-col h-full border-2 border-dashed border-white">
+                        <div class="bg-white/50 rounded-lg aspect-square mb-1.5 flex items-center justify-center text-2xl text-p_card_dark">
+                            <i class="fa-solid fa-gift drop-shadow-sm"></i>
+                        </div>
+                        <h4 class="font-cute font-bold text-p_card_dark text-[10px] leading-tight mb-1">Element ฟรี</h4>
+                        <p class="text-[8px] text-p_card_main mt-auto bg-white rounded-full py-0.5 font-bold">คลิ๊กเพื่อดู</p>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-6 mb-4">
+                <a href="https://drive.google.com/drive/folders/1w4i7tAcvXdWSPWB0gS5XiRjlO_4qGyAb" target="_blank" class="bg-white border-2 border-p_card_main rounded-[20px] p-3 flex items-center gap-3 pop-card shadow-pop">
+                    <div class="bg-p_card_main text-white w-10 h-10 rounded-full flex items-center justify-center text-xl flex-shrink-0">
+                        <i class="fa-solid fa-folder-open"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-cute font-bold text-[15px] text-p_card_dark leading-tight">เลือกตูน & บล็อคของร้านโมที่นี่</h3>
+                        <p class="text-[10px] text-p_text">คลิกเพื่อดูโฟลเดอร์ Google Drive รวม</p>
+                    </div>
+                </a>
+            </div>
+
+            <footer class="text-center py-4 border-t border-p_card_light mt-4 text-xs text-p_text font-cute">
+                <p>สงสัยตรงไหนทักแชทสอบถามได้เลยค่า แม่ค้าพร้อมตอบ 🌸</p>
+                <p class="text-[9px] mt-1 opacity-60">miori studio &copy; 2026</p>
+            </footer>
+
+        </main>
+    </div> </body>
+</html>
